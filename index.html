@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Number Game & Word Counter</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #eef2ff;
+      margin: 0;
+      padding: 25px;
+      color: #222;
+    }
+
+    h1 {
+      text-align: center;
+      color: #4338ca;
+    }
+
+    .container {
+      max-width: 650px;
+      margin: 25px auto;
+    }
+
+    .box {
+      background: white;
+      padding: 22px;
+      margin-bottom: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px #00000015;
+    }
+
+    input, textarea, button {
+      box-sizing: border-box;
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      font-size: 16px;
+      border-radius: 6px;
+    }
+
+    input, textarea {
+      border: 1px solid #ccc;
+    }
+
+    textarea {
+      min-height: 130px;
+      resize: vertical;
+    }
+
+    button {
+      background: #4f46e5;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #3730a3;
+    }
+
+    .result {
+      background: #eef2ff;
+      padding: 12px;
+      border-radius: 6px;
+      margin-top: 12px;
+    }
+
+    .stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .stats span {
+      background: #eef2ff;
+      padding: 10px;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Number Guessing Game & Word Counter</h1>
+
+  <main class="container">
+    <section class="box">
+      <h2>🎯 Number Guessing Game</h2>
+      <p>Guess a number between 1 and 100.</p>
+
+      <input
+        type="number"
+        id="guess"
+        min="1"
+        max="100"
+        placeholder="Enter your guess"
+      >
+
+      <button onclick="checkGuess()">Check Guess</button>
+      <button onclick="resetGame()">New Game</button>
+
+      <div class="result" id="gameResult">
+        Enter a number to start playing!
+      </div>
+      <p>Attempts: <strong id="attempts">0</strong></p>
+    </section>
+
+    <section class="box">
+      <h2>📝 Word Counter</h2>
+      <p>Type or paste your text below.</p>
+
+      <textarea
+        id="textInput"
+        placeholder="Start typing here..."
+        oninput="countWords()"
+      ></textarea>
+
+      <div class="stats">
+        <span>Words: <strong id="words">0</strong></span>
+        <span>Characters: <strong id="characters">0</strong></span>
+        <span>No spaces: <strong id="noSpaces">0</strong></span>
+        <span>Sentences: <strong id="sentences">0</strong></span>
+      </div>
+
+      <button onclick="clearText()">Clear Text</button>
+    </section>
+  </main>
+
+  <script>
+    let secretNumber = Math.floor(Math.random() * 100) + 1;
+    let attempts = 0;
+    let gameOver = false;
+
+    function checkGuess() {
+      const input = document.getElementById("guess");
+      const guess = Number(input.value);
+      const result = document.getElementById("gameResult");
+
+      if (input.value === "" || guess < 1 || guess > 100) {
+        result.textContent = "Please enter a number from 1 to 100.";
+        return;
+      }
+
+      if (gameOver) {
+        result.textContent = "Click New Game to play again.";
+        return;
+      }
+
+      attempts++;
+      document.getElementById("attempts").textContent = attempts;
+
+      if (guess === secretNumber) {
+        result.textContent = "🎉 Correct! You guessed the number!";
+        gameOver = true;
+      } else if (guess < secretNumber) {
+        result.textContent = "Too low! Try a bigger number.";
+      } else {
+        result.textContent = "Too high! Try a smaller number.";
+      }
+
+      input.value = "";
+    }
+
+    function resetGame() {
+      secretNumber = Math.floor(Math.random() * 100) + 1;
+      attempts = 0;
+      gameOver = false;
+      document.getElementById("attempts").textContent = 0;
+      document.getElementById("guess").value = "";
+      document.getElementById("gameResult").textContent =
+        "New game started! Guess a number.";
+    }
+
+    function countWords() {
+      const text = document.getElementById("textInput").value;
+      const trimmed = text.trim();
+
+      const words = trimmed
+        ? trimmed.split(/\s+/).length
+        : 0;
+
+      const sentences = trimmed
+        ? (trimmed.match(/[.!?]+(?=\s|$)/g) || []).length
+        : 0;
+
+      document.getElementById("words").textContent = words;
+      document.getElementById("characters").textContent = text.length;
+      document.getElementById("noSpaces").textContent =
+        text.replace(/\s/g, "").length;
+      document.getElementById("sentences").textContent = sentences;
+    }
+
+    function clearText() {
+      document.getElementById("textInput").value = "";
+      countWords();
+    }
+  </script>
+</body>
+</html>
